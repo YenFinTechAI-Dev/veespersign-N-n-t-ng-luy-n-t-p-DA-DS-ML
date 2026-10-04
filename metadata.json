@@ -1,0 +1,6 @@
+{
+  "name": "DataForge — Nền tảng luyện tập DA / DS / ML",
+  "description": "Nền tảng web thực hành bài tập và project Data Analytics, Data Science, Machine Learning theo hướng thực tế và phỏng vấn với trình chạy code Python & TypeScript, bộ dữ liệu trực quan và chấm điểm tự động.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
