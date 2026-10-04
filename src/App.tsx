@@ -50,7 +50,7 @@ type ConsoleTab = 'testcases' | 'result';
 export function App() {
   const [problems, setProblems] = useState<Problem[]>(() => {
     try {
-      const saved = localStorage.getItem('df_problems_v3');
+      const saved = localStorage.getItem('df_problems_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length >= ALL_INITIAL_PROBLEMS.length) {
@@ -138,7 +138,7 @@ export function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('df_problems_v3', JSON.stringify(problems));
+      localStorage.setItem('df_problems_v4', JSON.stringify(problems));
       localStorage.setItem('df_codemap_v2', JSON.stringify(codeMap));
       localStorage.setItem('df_solved_v2', JSON.stringify(solvedProblemIds));
       localStorage.setItem('df_scores_v2', JSON.stringify(bestScores));

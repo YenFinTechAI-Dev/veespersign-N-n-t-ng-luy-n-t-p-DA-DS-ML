@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   DifficultyLevel,
   Problem,
@@ -97,6 +97,20 @@ export const ProblemBankView: React.FC<ProblemBankViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'SOLVED' | 'UNSOLVED'>('ALL');
   const [companyFilter, setCompanyFilter] = useState<string>('All');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(25);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    selectedTrack,
+    selectedDifficulty,
+    selectedSource,
+    selectedCategory,
+    statusFilter,
+    companyFilter,
+    searchQuery,
+  ]);
 
   // Extract unique categories across all problems
   const availableCategories = useMemo(() => {
@@ -150,6 +164,12 @@ export const ProblemBankView: React.FC<ProblemBankViewProps> = ({
     }
     return true;
   });
+
+  const totalPages = Math.ceil(filteredProblems.length / pageSize) || 1;
+  const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (validCurrentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredProblems.length);
+  const paginatedProblems = filteredProblems.slice(startIndex, endIndex);
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 space-y-6">
@@ -463,7 +483,8 @@ export const ProblemBankView: React.FC<ProblemBankViewProps> = ({
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+            <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-950/70 text-slate-400">
@@ -478,7 +499,7 @@ export const ProblemBankView: React.FC<ProblemBankViewProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 font-sans">
-                {filteredProblems.map((problem) => {
+                {paginatedProblems.map((problem) => {
                   const isSolved = solvedProblemIds.includes(problem.id);
                   const sourceConf = (problem.source && SOURCE_CONFIG[problem.source]) || {
                     label: problem.source || 'Online',
@@ -586,7 +607,58 @@ export const ProblemBankView: React.FC<ProblemBankViewProps> = ({
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Pagination Footer */}
+          <div className="py-3 px-4 border-t border-slate-800 bg-slate-950/60 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span>
+                Hiển thị <strong className="text-slate-200">{filteredProblems.length > 0 ? startIndex + 1 : 0}</strong> -{' '}
+                <strong className="text-slate-200">{endIndex}</strong> trong tổng số{' '}
+                <strong className="text-sky-400 font-mono">{filteredProblems.length}</strong> bài tập
+              </span>
+              <span className="text-slate-600">|</span>
+              <div className="flex items-center gap-1.5">
+                <span>Số bài/trang:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-slate-200 focus:outline-none focus:border-sky-500 font-mono text-[11px]"
+                >
+                  <option value={15}>15</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                disabled={validCurrentPage <= 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 font-medium"
+              >
+                Trước
+              </button>
+
+              <span className="px-3 py-1 font-mono text-slate-200">
+                {validCurrentPage} / {totalPages}
+              </span>
+
+              <button
+                disabled={validCurrentPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 font-medium"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        </>
+      )}
       </div>
     </div>
   );

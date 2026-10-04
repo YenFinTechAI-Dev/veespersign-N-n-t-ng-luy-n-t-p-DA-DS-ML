@@ -1786,9 +1786,11 @@ def solve(dataset):
 ];
 
 import { MORE_PROBLEMS } from './more_problems';
+import { getExpandedProblemBank } from './expanded_problem_bank';
 
 export const ALL_INITIAL_PROBLEMS: Problem[] = [
   ...INITIAL_PROBLEMS,
   ...MORE_PROBLEMS,
+  ...getExpandedProblemBank(),
 ];
 
