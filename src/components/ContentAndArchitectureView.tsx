@@ -115,7 +115,7 @@ export const ContentAndArchitectureView: React.FC<ContentAndArchitectureViewProp
   const [curationStage, setCurationStage] = useState<number>(1);
   const [title, setTitle] = useState('Phân tích Tỷ lệ Giữ chân Khách hàng Tháng thứ 3 (Cohort Retention)');
   const [track, setTrack] = useState<TrackId>('DA');
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>('Intermediate');
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>('Medium');
   const [topic, setTopic] = useState('Cohort & Retention Analytics');
   const [skillsInput, setSkillsInput] = useState('Cohort Analysis, Retention Rate, User Lifecycle');
   const [interviewTag, setInterviewTag] = useState('Subscription Analytics Interview');
@@ -139,14 +139,19 @@ export const ContentAndArchitectureView: React.FC<ContentAndArchitectureViewProp
       title: title.trim() || 'Bài tập tùy chỉnh mới',
       track,
       difficulty,
+      source: 'InterviewQuery',
+      sourceRef: 'Community Curation',
+      categoryGroup: 'Custom Curated Cases',
       topic: topic.trim() || 'Applied Data Case',
       skills: skillsInput
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean),
       interviewTag: interviewTag.trim() || 'Custom Curated Problem',
+      companies: ['Community'],
+      acceptanceRate: '75.0%',
       estimatedMinutes: 20,
-      points: difficulty === 'Beginner' ? 100 : difficulty === 'Intermediate' ? 150 : 200,
+      points: difficulty === 'Easy' ? 100 : difficulty === 'Medium' ? 150 : 200,
       summary: summary.trim(),
       businessContext:
         'Bài tập được đóng gói thông qua Content Workflow (Collect → Classify → Tag Difficulty/Skill → Curate → Publish).',
@@ -405,7 +410,7 @@ export const ContentAndArchitectureView: React.FC<ContentAndArchitectureViewProp
                     3. Độ khó (Difficulty)
                   </label>
                   <div className="flex gap-1 p-1 bg-slate-950 border border-slate-800 rounded-md">
-                    {(['Beginner', 'Intermediate', 'Advanced'] as DifficultyLevel[]).map(
+                    {(['Easy', 'Medium', 'Hard'] as DifficultyLevel[]).map(
                       (lvl) => (
                         <button
                           key={lvl}
